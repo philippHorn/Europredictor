@@ -1,73 +1,9 @@
-# -*- coding: utf-8 -*-
 import re
-import nltk
 from copy import deepcopy
 from pattern.en import parse, parsetree
 from nltk.tokenize import sent_tokenize
-from nltk.sentiment import vader
-from keywords import keywords
-from praw import Reddit
-    
-class Comment(object):
-    """
-    Takes a Comment praw object
-    """
-    def __init__(self, comment):
-        self.body = comment.body.encode('utf-8').decode('utf-8', 'ignore')
-        self.url = comment.permalink
-        self.username = comment.author.name
-        self.flair = comment.author_flair_text
-        self.thread_title = comment.link_title.encode('utf-8').decode('utf-8', 'ignore')
-        self.thread_url = comment.link_url
-        self.posted = comment.created_utc
-        self.countries = self.find_countries()
+from .keywords import keywords
 
-    def __str__(self):
-        return self.body
-        
-    def __eq__(self, other):
-        return (self.body == other.body 
-                and self.url == other.url
-                and self.username == other.username
-                and self.flair == other.flair
-                and self.thread_title == other.title
-                and self.thread_url == other.thread_url
-                and self.posted == other.posted
-                and self.countries == other.countries
-                )
-
-    def find_countries(self):
-        '''
-        Find all countries mentioned in the comment.
-        '''
-        return [country for country, patterns in keywords.items() 
-                if any((re.search(pattern, self.body, flags=re.IGNORECASE)
-                for pattern in patterns))]
-    
-    def analyse(self):
-        '''
-        Run the comment through the Vadar polarity scorer and add an attribute to the comment object containing the results
-        
-        :param comment: comment
-        :return: comment
-        '''
-        # nltk.download() # must initially download vader_lexicon for vader to work
-        
-        self.polarity_scores = vader.SentimentIntensityAnalyzer().polarity_scores(self.body)
-        return
-        
-    
-###########################################
-              # Functions #
-###########################################
-
-
-def get_all_comments(time_interval, comment_limit=None):
-    r = Reddit(user_agent='Get comments from soccer subreddit') 
-    print "getting subreddit"
-    user = r.get_subreddit('soccer')
-    comments = user.get_comments(sort='new', time=time_interval, limit=comment_limit)
-    return (Comment(c) for c in comments)
 
 def split_to_country(comment):
     """
@@ -88,8 +24,6 @@ def split_to_country(comment):
 
     # Filter sentences into one and multi country. Remove sentences with no country references.
     sents_with_one_country, sents_with_multi_country = _filter_on_country_count(sentences)
-    if len(sents_with_one_country) + len(sents_with_multi_country) == 0:
-        print('No country detected in comment')
     
     # Break down sentences with multiple country references into clauses.
     clauses = [_sub_clause(sentence) for sentence in sents_with_multi_country]
@@ -111,6 +45,7 @@ def split_to_country(comment):
 
     return comment_list
 
+
 def _sub_clause(string):
     """
     Takes a string (which should be a single sentence) and returns a list of strings of clauses of the sentence.
@@ -121,6 +56,10 @@ def _sub_clause(string):
     
     # Spit into sentences and tag the words with parts of speech
     tagged = parsetree(string, relations=True)
+    
+    # Check that we only have one sentence.
+    if len(tagged) != 1:
+        raise ValueError()
 
     # Find the words (conjunctions "CC" and commas ",") which will separate our clauses ensuring we don't use
     # conjuctions or commas that belong to a word chunk.
@@ -130,6 +69,7 @@ def _sub_clause(string):
     # Slice our original sentence based on the separators and return as a list of strings.
     clauses = _slice_sentence(sentence, separators)
     return [" ".join([word.string for word in word_list]) for word_list in clauses]
+
 
 def _slice_sentence(sentence, seperators):
     """
@@ -149,6 +89,7 @@ def _slice_sentence(sentence, seperators):
     sentences.append(sentence[start:])
     return sentences
 
+
 def _count_countries(string):
     """
     Count the number of unique countries mentioned in the string.
@@ -160,6 +101,7 @@ def _count_countries(string):
     return len([country for country, patterns in keywords.items()
                 if any((re.search(pattern, string, flags=re.IGNORECASE)
                         for pattern in patterns))])
+
 
 def _filter_on_country_count(string_list):
     """

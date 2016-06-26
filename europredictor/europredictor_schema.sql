@@ -2,15 +2,16 @@
 
 PRAGMA foreign_keys = ON;
 
-DROP TABLE if exists clauses;
-CREATE TABLE clauses (
+DROP TABLE if exists comments;
+CREATE TABLE comments (
   id INTEGER PRIMARY KEY autoincrement,
   thread_url TEXT NOT NULL,
+  thread_title TEXT,
   comment_url TEXT NOT NULL,
   'timestamp' TIMESTAMP,
   username TEXT NOT NULL,
-  clause TEXT NOT NULL,
-  team TEXT NOT NULL,
+  comment TEXT NOT NULL,
+  country TEXT NOT NULL,
   pos_sentiment NUMERIC,
   neu_sentiment NUMERIC,
   neg_sentiment NUMERIC,
@@ -22,4 +23,5 @@ CREATE TABLE clauses (
         typeof("comp_sentiment") = "real"
   )
 );
+
 
