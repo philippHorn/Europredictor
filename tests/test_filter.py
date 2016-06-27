@@ -6,7 +6,7 @@ class SimpleComment(Comment):
     """simplified comment class for testing"""
     def __init__(self, body):
         self.body = body
-        self.countries = self._find_countries()
+        self.countries = self.find_countries()
 
 class FilterTestCase(unittest.TestCase):
 

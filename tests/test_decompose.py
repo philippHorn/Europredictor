@@ -1,5 +1,5 @@
 import unittest
-from europredictor.subclause import split_to_country
+from europredictor.decompose import split_to_country
 from europredictor.comment import Comment
 
 class SimpleComment(Comment):
