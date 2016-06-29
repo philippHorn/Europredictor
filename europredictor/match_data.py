@@ -11,10 +11,6 @@ with open(json_path) as file:
     js_dict = json.loads(json_str)
 fixtures = js_dict['fixtures']
 
-def _is_after(isotime):
-    time = datetime.strptime(match['date'], "%Y-%m-%dT%H:%M:%SZ")
-    return time > datetime.now()
-
 class Match:
     def __init__(self, json):
         self.start_date = datetime.strptime(json['date'], "%Y-%m-%dT%H:%M:%SZ")

@@ -1,6 +1,6 @@
 from comment import Comment, get_all_comments, split_to_country
 from db_IO import store_analysed_comment
-from apscheduler.schedulers.blocking import BlockingScheduler
+#from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 #sched = BlockingScheduler()

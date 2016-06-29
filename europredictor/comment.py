@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 import re
 import nltk
+import time
 from copy import deepcopy
 from pattern.en import parse, parsetree
 from nltk.tokenize import sent_tokenize
 from nltk.sentiment import vader
 from keywords import keywords
 from praw import Reddit
+from praw.helpers import submissions_between, comment_stream
+
+r = Reddit(user_agent='Get comments from soccer subreddit')
     
 class Comment(object):
     """
@@ -17,10 +21,14 @@ class Comment(object):
         self.url = comment.permalink
         self.username = comment.author.name
         self.flair = comment.author_flair_text
-        self.thread_title = comment.link_title.encode('utf-8').decode('utf-8', 'ignore')
-        self.thread_url = comment.link_url
         self.posted = comment.created_utc
         self.countries = self.find_countries()
+        try:
+            self.thread_title = comment.link_title.encode('utf-8').decode('utf-8', 'ignore')
+            self.thread_url = comment.link_url
+        except:
+            self.thread_title = "No thread info"
+            self.thread_url = "No thread info"
 
     def __str__(self):
         return self.body
@@ -63,11 +71,22 @@ class Comment(object):
 
 
 def get_all_comments(time_interval, comment_limit=None):
-    r = Reddit(user_agent='Get comments from soccer subreddit') 
-    print "getting subreddit"
     user = r.get_subreddit('soccer')
     comments = user.get_comments(sort='new', time=time_interval, limit=comment_limit)
     return (Comment(c) for c in comments)
+
+def get_past_comments(highest_timestamp = None):
+    """gets comments that were made before the given time"""
+    if highest_timestamp is None:
+        highest_timestamp = time.time()
+    subs = submissions_between(r, "soccer", highest_timestamp = highest_timestamp)
+    comments = (sub.comments for sub in subs)
+    print dir(next(comments)[0])
+    return (Comment(c) for flat in comments for c in flat)
+
+def stream_comments():
+    """streams new comments from r/soccer"""
+    return (Comment(c) for c in comment_stream(r, "soccer"))
 
 def split_to_country(comment):
     """
