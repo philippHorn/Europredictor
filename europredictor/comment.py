@@ -18,14 +18,14 @@ class Comment(object):
     """
     def __init__(self, comment):
         self.body = comment.body.encode('utf-8').decode('utf-8', 'ignore')
-        self.url = comment.permalink
+        self.url = comment.permalink.encode('utf-8').decode('utf-8', 'ignore')
         self.username = comment.author.name
         self.flair = comment.author_flair_text
         self.posted = comment.created_utc
         self.countries = self.find_countries()
         try:
             self.thread_title = comment.link_title.encode('utf-8').decode('utf-8', 'ignore')
-            self.thread_url = comment.link_url
+            self.thread_url = comment.link_url.encode('utf-8').decode('utf-8', 'ignore')
         except:
             self.thread_title = "No thread info"
             self.thread_url = "No thread info"
@@ -125,7 +125,7 @@ def split_to_country(comment):
     for string in strings_with_country:
         new_comment = deepcopy(comment)
         new_comment.body = string
-        new_comment.find_countries()
+        new_comment.countries = new_comment.find_countries()
         comment_list.append(new_comment)
 
     return comment_list
