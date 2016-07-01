@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sqlite3
 import pandas as pd
 from datetime import datetime
@@ -76,12 +78,14 @@ def _comment_exists(comment):
 
     conn = _connect_db(DATABASE_NAME)
     cursor = conn.cursor()
+
     cursor.execute(
         """
         SELECT id FROM comments WHERE
-        'thread_url' LIKE '{}' AND 'comment_url' LIKE '{}'
-        AND 'country' LIKE '{}'
-        """.format(comment.thread_url, comment.url, comment.countries[0]))
+        'thread_url' LIKE ? AND 'comment_url' LIKE ?
+        AND 'country' LIKE ?
+        """, (comment.thread_url, comment.url, comment.countries[0]))
+
     if cursor.fetchone():
         return True
     else:

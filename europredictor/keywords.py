@@ -10,7 +10,7 @@ keywords = {
     "Hungary" : ["Hungar((?=y)|ian)"], 
     "Iceland" : ["Iceland"],
     "Italy" : ["Ital((?=y)|ian)"],
-    "Northern Ireland" : ["Northern Ireland", "N. Ireland"],
+    "Northern Ireland" : ["Northern Ireland", "N\. Ireland"],
     "Poland" : ["Pol((?=and)|ish)"],
     "Portugal" : ["Portug((?=al)|uese)"],
     "Republic of Ireland" : ['(?!(?<=Northern )|(?<=N\. ))Ireland'], #find Ireland only if there is no "N." or "Northern" in front of it

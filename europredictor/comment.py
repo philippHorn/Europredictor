@@ -17,15 +17,15 @@ class Comment(object):
     Takes a Comment praw object
     """
     def __init__(self, comment):
-        self.body = comment.body.encode('utf-8').decode('utf-8', 'ignore')
-        self.url = comment.permalink.encode('utf-8').decode('utf-8', 'ignore')
+        self.body = comment.body
+        self.url = comment.permalink
         self.username = comment.author.name
         self.flair = comment.author_flair_text
         self.posted = comment.created_utc
         self.countries = self.find_countries()
         try:
-            self.thread_title = comment.link_title.encode('utf-8').decode('utf-8', 'ignore')
-            self.thread_url = comment.link_url.encode('utf-8').decode('utf-8', 'ignore')
+            self.thread_title = comment.link_title
+            self.thread_url = comment.link_url
         except:
             self.thread_title = "No thread info"
             self.thread_url = "No thread info"

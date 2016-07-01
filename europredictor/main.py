@@ -8,9 +8,14 @@ from datetime import datetime
 app = Flask(__name__)
 Bootstrap(app)
 
+@app.route("/matches")
+def matches():
+    return render_template('matches.html', active = "matches")
+
 @app.route("/")
+@app.route("/home")
 def home():
-    return redirect(url_for("graph"))
+    return render_template('home.html', active = "home")
 
 @app.route("/graph/")
 def graph():
@@ -21,7 +26,7 @@ def graph():
         start_date, end_date = _get_times()
         #data_points = sentiment_rolling_averages(countries, start, end)
 
-    return render_template('custom_graph.html', teams = get_all_teams())
+    return render_template('custom_graph.html', teams = get_all_teams(), active = "graph")
 
 def _get_times():
     # todo: add validation, support for multiple formats

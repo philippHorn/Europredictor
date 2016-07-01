@@ -2,7 +2,6 @@ import requests
 from datetime import datetime
 from settings import BASE_DIR
 import json
-import os
 
 json_path =  BASE_DIR + "/europredictor/data/matchinfo.json"
 
@@ -30,10 +29,10 @@ def get_all_matches():
     return [Match(match) for match in fixtures]
     
 def get_past_matches():
-    return [match for match in get_all_matches() if match.start_date < datetime.now()]
+    return [match for match in get_all_matches() if match.start_date < datetime.utcnow()]
     
 def get_future_matches():
-    return [match for match in get_all_matches() if match.start_date > datetime.now()]
+    return [match for match in get_all_matches() if match.start_date > datetime.utcnow()]
 
 def get_all_teams():
     url = "http://api.football-data.org/v1/soccerseasons/424/teams"

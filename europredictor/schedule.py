@@ -9,7 +9,7 @@ from db_IO import store_analysed_comment
 
 #@sched.scheduled_job('interval', hours=1)
 def run_all(time_interval, comment_limit=None):
-
+    #pdb.set_trace()
     comments = get_all_comments(time_interval, comment_limit)
     
     for comment in comments:
@@ -22,10 +22,7 @@ def run_all(time_interval, comment_limit=None):
                 comment.analyse()
                 store_analysed_comment(comment, overwrite = False)
     print "Done"
-    """
-    Logic goes here
-    
-    """
+
 
 run_all("hours")
 # sched.start()
