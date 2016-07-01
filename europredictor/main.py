@@ -40,4 +40,8 @@ def _get_times():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    import os
+    host = os.environ.get('IP', '0.0.0.0')
+    port = int(os.environ.get('PORT', 8080))
+    app.run(debug=True, host=host, port=port)
+    # app.run(debug=True)
