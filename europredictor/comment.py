@@ -19,30 +19,14 @@ class Comment(object):
     def __init__(self, comment):
         self.body = comment.body
         self.url = comment.permalink
-        self.username = comment.author.name
         self.flair = comment.author_flair_text
         self.posted = comment.created_utc
         self.countries = self.find_countries()
-        try:
-            self.thread_title = comment.link_title
-            self.thread_url = comment.link_url
-        except:
-            self.thread_title = "No thread info"
-            self.thread_url = "No thread info"
+        self.score = comment.score
 
     def __str__(self):
         return self.body
         
-    def __eq__(self, other):
-        return (self.body == other.body 
-                and self.url == other.url
-                and self.username == other.username
-                and self.flair == other.flair
-                and self.thread_title == other.title
-                and self.thread_url == other.thread_url
-                and self.posted == other.posted
-                and self.countries == other.countries
-                )
 
     def find_countries(self):
         '''
@@ -77,15 +61,17 @@ def get_all_comments(time_interval, comment_limit=None):
 
 def get_past_comments(highest_timestamp = None):
     """gets comments that were made before the given time"""
+    
     if highest_timestamp is None:
         highest_timestamp = time.time()
     subs = submissions_between(r, "soccer", highest_timestamp = highest_timestamp)
     comments = (sub.comments for sub in subs)
-    print dir(next(comments)[0])
+    #print dir(next(comments)[0])
     return (Comment(c) for flat in comments for c in flat)
 
 def stream_comments():
     """streams new comments from r/soccer"""
+    
     return (Comment(c) for c in comment_stream(r, "soccer"))
 
 def split_to_country(comment):

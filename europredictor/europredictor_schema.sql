@@ -2,26 +2,28 @@
 
 PRAGMA foreign_keys = ON;
 
+DROP TABLE if exists countries;
+CREATE TABLE countries (
+  id INTEGER PRIMARY KEY autoincrement,
+  name TEXT NOT NULL
+);
+
 DROP TABLE if exists comments;
 CREATE TABLE comments (
   id INTEGER PRIMARY KEY autoincrement,
-  thread_url TEXT NOT NULL,
-  thread_title TEXT,
-  comment_url TEXT NOT NULL,
   'timestamp' TIMESTAMP,
-  username TEXT NOT NULL,
   comment TEXT NOT NULL,
-  country TEXT NOT NULL,
+  flair TEXT,
+  score INTEGER,
+  country INTEGER NOT NULL,
   pos_sentiment NUMERIC,
-  neu_sentiment NUMERIC,
   neg_sentiment NUMERIC,
-  comp_sentiment NUMERIC,
+  FOREIGN KEY(country) REFERENCES countries(id)
   CHECK (
         typeof("pos_sentiment") = "real" AND
-        typeof("neu_sentiment") = "real" AND
-        typeof("neg_sentiment") = "real" AND
-        typeof("comp_sentiment") = "real"
+        typeof("neg_sentiment") = "real"
   )
 );
+
 
 

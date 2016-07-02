@@ -1,4 +1,4 @@
-from comment import Comment, get_all_comments, split_to_country
+from comment import Comment, get_all_comments, split_to_country, stream_comments, get_past_comments
 from db_IO import store_analysed_comment
 #from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -10,7 +10,7 @@ from db_IO import store_analysed_comment
 #@sched.scheduled_job('interval', hours=1)
 def run_all(time_interval, comment_limit=None):
     #pdb.set_trace()
-    comments = get_all_comments(time_interval, comment_limit)
+    comments = get_past_comments()
     
     for comment in comments:
         if len(comment.countries) == 1:

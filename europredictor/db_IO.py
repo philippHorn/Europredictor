@@ -5,8 +5,17 @@ import pandas as pd
 from datetime import datetime
 from copy import deepcopy
 from settings import DATABASE_NAME
+from keywords import keywords
 
-
+def set_up_db():
+    sql = "INSERT INTO countries (name) VALUES (?)"
+    conn = _connect_db(DATABASE_NAME)
+    cursor = conn.cursor()
+    
+    for country in keywords:
+        print country
+        cursor.execute(sql, (country, ))
+    conn.commit()
 
 def store_analysed_comment(analysed_comment, overwrite = False):
     '''
@@ -81,15 +90,14 @@ def _comment_exists(comment):
 
     cursor.execute(
         """
-        SELECT id FROM comments WHERE
-        'thread_url' LIKE ? AND 'comment_url' LIKE ?
-        AND 'country' LIKE ?
-        """, (comment.thread_url, comment.url, comment.countries[0]))
+        SELECT comments.id FROM comments JOIN countries 
+        WHERE comments.country = countries.id
+        AND comments.comment LIKE ?
+        AND countries.name LIKE ?
+        """, (comment.body, comment.countries[0]))
 
-    if cursor.fetchone():
-        return True
-    else:
-        return False
+    return bool(cursor.fetchone())
+
 
 
 def _write_comment_to_db(analysed_comment):
@@ -100,31 +108,28 @@ def _write_comment_to_db(analysed_comment):
     :return: None
     '''
     conn = _connect_db(DATABASE_NAME)
+    country_id = conn.execute("SELECT id FROM countries WHERE name = ?", 
+                               (analysed_comment.countries[0], ))
     sql = "INSERT INTO comments \
-            (thread_url, thread_title, comment_url, timestamp, username, comment, country, pos_sentiment, neu_sentiment, neg_sentiment, comp_sentiment) \
-            VALUES (:t_url, :t_title, :c_url, :timestamp, :username, :comment, :country, :pos_s, :neu_s, :neg_s, :comp_s)"
+            (timestamp, comment, flair, score, country, pos_sentiment, neg_sentiment) \
+            VALUES (:timestamp, :comment, :flair, :score, :country, :pos_s, :neg_s)"
     params = {
-        "t_url"    : analysed_comment.thread_url,
-        "t_title"  : analysed_comment.thread_title,
-        "c_url"    : analysed_comment.url,
+        "flair"    : analysed_comment.flair,
+        "score"    : analysed_comment.score,
         "timestamp": analysed_comment.posted,
-        "username" : analysed_comment.username,
         "comment"  : analysed_comment.body,
-        "country"  : analysed_comment.countries[0],
+        "country"  : country_id.fetchone()[0],
         "pos_s"    : analysed_comment.polarity_scores['pos'],
-        "neu_s"    : analysed_comment.polarity_scores['neu'],
         "neg_s"    : analysed_comment.polarity_scores['neg'],
-        "comp_s"   : analysed_comment.polarity_scores['compound']
         }
-    try:
-        conn.execute(sql, params)
-        conn.commit()
-        print('Comment successfully written to db')
-    except:
+    
+    conn.execute(sql, params)
+    conn.commit()
+    print('Comment successfully written to db')
+    """except:
         with open("error.txt", "wb") as file:
             file.write(str(params))
-            print params
-    return
+            print params"""
 
 def read_to_dataframe(countries = None, average = False, start_time = 0, end_time = datetime.now()):
     '''
@@ -139,7 +144,7 @@ def read_to_dataframe(countries = None, average = False, start_time = 0, end_tim
         if average == False:
             sql_query = 'SELECT * FROM comments WHERE timestamp >= ?  AND timestamp < ? ORDER BY timestamp DESC'
         elif average == True:
-            sql_query = 'SELECT country, avg(pos_sentiment), avg(neu_sentiment), avg(neg_sentiment), avg(comp_sentiment) FROM comments \
+            sql_query = 'SELECT country, avg(pos_sentiment), avg(neg_sentiment) FROM comments \
             WHERE timestamp >= ?  AND timestamp < ? GROUP by country'
         else:
             raise ValueError()
