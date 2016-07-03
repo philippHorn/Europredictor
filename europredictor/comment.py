@@ -8,7 +8,8 @@ from nltk.tokenize import sent_tokenize
 from nltk.sentiment import vader
 from keywords import keywords
 from praw import Reddit
-from praw.helpers import submissions_between, comment_stream
+from praw.objects import MoreComments
+from praw.helpers import submissions_between, comment_stream, flatten_tree
 
 r = Reddit(user_agent='Get comments from soccer subreddit')
     
@@ -20,6 +21,8 @@ class Comment(object):
         self.body = comment.body
         self.url = comment.permalink
         self.flair = comment.author_flair_text
+        if self.flair in keywords:
+            self._replace_we()
         self.posted = comment.created_utc
         self.countries = self.find_countries()
         self.score = comment.score
@@ -46,8 +49,20 @@ class Comment(object):
         # nltk.download() # must initially download vader_lexicon for vader to work
         
         self.polarity_scores = vader.SentimentIntensityAnalyzer().polarity_scores(self.body)
-        return
-        
+    
+    def _replace_we(self):
+        """
+        Since it is very common for the soccer subreddit to refer to a country by 'we', 
+        when the user has a flair set for that country, this replaces the 'we' keyword with
+        the flair's country name.
+        """
+        start = self.body
+        # negative lookahead to include the empty string
+        self.body = re.sub(pattern = "(?<!\w)we\W",repl = (self.flair + " "), string = self.body, flags = re.IGNORECASE)
+        self.body = re.sub(pattern = "(?<!\w)our\W",repl = (self.flair + " "), string = self.body, flags = re.IGNORECASE)
+        if self.body != start:
+            print "------------", start
+            print "+++++++++++++++", self.body
     
 ###########################################
               # Functions #
@@ -59,15 +74,18 @@ def get_all_comments(time_interval, comment_limit=None):
     comments = user.get_comments(sort='new', time=time_interval, limit=comment_limit)
     return (Comment(c) for c in comments)
 
-def get_past_comments(highest_timestamp = None):
+def get_past_comments(lowest_timestamp = None, highest_timestamp = None):
     """gets comments that were made before the given time"""
     
-    if highest_timestamp is None:
-        highest_timestamp = time.time()
-    subs = submissions_between(r, "soccer", highest_timestamp = highest_timestamp)
+    subs = submissions_between(r, "soccer", highest_timestamp = highest_timestamp, lowest_timestamp = lowest_timestamp)
     comments = (sub.comments for sub in subs)
-    #print dir(next(comments)[0])
-    return (Comment(c) for flat in comments for c in flat)
+    for sub_comments in comments:
+        for comment in sub_comments:
+            if not isinstance(comment, MoreComments):
+                yield Comment(comment)
+            elif isinstance(comment, MoreComments):
+                comments = comment.comments
+
 
 def stream_comments():
     """streams new comments from r/soccer"""
