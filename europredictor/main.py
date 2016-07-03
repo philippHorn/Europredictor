@@ -21,6 +21,7 @@ def home():
 @app.route("/graph/")
 def graph():
     """page for showing a custom graph, specified in the GET-headers"""
+    
     graph_keys = {"startMonth", "endMonth", "startDay", "endDay", "countries"}
     graph = ""
     if graph_keys.intersection(request.args.keys()) == graph_keys:
@@ -30,9 +31,14 @@ def graph():
         e_timestamp = float(end_date.strftime("%s"))
         graph = plot_countries(countries, s_timestamp, e_timestamp)
 
-    return render_template('custom_graph.html', teams = get_all_teams(), active = "graph", graph = graph)
+    return render_template('custom_graph.html', 
+                            teams = get_all_teams(), 
+                            active = "graph", 
+                            graph = graph)
 
 def _get_times():
+    "return the dates from GET-request as datetime objects"
+    
     s_month = request.args.get("startMonth", None)
     s_day = request.args.get("startDay", None)
     s_date = datetime.strptime(s_month + s_day + "2016", "%m%d%Y")

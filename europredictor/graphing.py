@@ -13,10 +13,12 @@ def sentiment_rolling_averages(countries = None, interval = 'hour', start_time =
     '''
     if end_time is None:
         end_time = datetime.now()
+        
     # Creat the dataframe from the database
     df = read_to_dataframe(countries = countries, average = False, start_time = start_time, end_time = end_time)
     if df.empty:
         abort(400)
+        
     # Calculate the overall sentiment
     df['sentiment'] = df.pos_sentiment - df.neg_sentiment
     
@@ -35,7 +37,6 @@ def sentiment_rolling_averages(countries = None, interval = 'hour', start_time =
 
 def plot_countries(countries, start_time, end_time):
     df = sentiment_rolling_averages(countries = countries, start_time = start_time, end_time = end_time, interval = 'hour')
-    print(df)
     p = TimeSeries(df, x='timestamp', y='sentiment', color='name', width=1200)
     return "\n".join(components(p))
 

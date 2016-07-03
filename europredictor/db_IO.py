@@ -8,7 +8,10 @@ from copy import deepcopy
 from settings import DATABASE_NAME
 from keywords import keywords
 
+
 def set_up_db():
+    """fills all countries into the country database"""
+    
     sql = "INSERT INTO countries (name) VALUES (?)"
     conn = _connect_db(DATABASE_NAME)
     cursor = conn.cursor()
@@ -17,6 +20,7 @@ def set_up_db():
         print country
         cursor.execute(sql, (country, ))
     conn.commit()
+
 
 def store_analysed_comment(analysed_comment, overwrite = False):
     '''
@@ -99,12 +103,18 @@ def _comment_exists(comment):
 
     return bool(cursor.fetchone())
 
+
 def find_oldest():
+    """Returns timestamp of the oldest comment in the db.
+    This is helpful while filling the databse
+    """
+    
     conn = _connect_db(DATABASE_NAME)
     timestamp_cur = conn.execute("SELECT timestamp FROM comments ORDER BY timestamp ASC")
     timestamp = timestamp_cur.fetchone()[0]
     print "Oldest timestamp: ", datetime.fromtimestamp(timestamp)
     return timestamp
+
 
 def _write_comment_to_db(analysed_comment):
     '''
@@ -139,10 +149,9 @@ def _write_comment_to_db(analysed_comment):
 
 def read_to_dataframe(countries = None, average = False, start_time = 0, end_time = datetime.now()):
     '''
-
-
-
+    Reads data from the database into a pandas-dataframe.
     '''
+    
     # If no contires specified, retrieve all comments
     if countries == None:
         
@@ -161,7 +170,14 @@ def read_to_dataframe(countries = None, average = False, start_time = 0, end_tim
         sql_params = [start_time, end_time]
         sql_params.extend(countries)
         if average == False: 
-            sql_query = 'SELECT name, timestamp, pos_sentiment, neg_sentiment FROM comments JOIN countries WHERE comments.country = countries.id AND comments.timestamp >= ?  AND comments.timestamp < ? AND countries.name IN (%s) ORDER BY timestamp DESC' % placeholders
+            sql_query = """SELECT name, timestamp, pos_sentiment, neg_sentiment 
+                           FROM comments JOIN countries
+                           WHERE comments.country = countries.id 
+                           AND comments.timestamp >= ?  
+                           AND comments.timestamp < ? 
+                           AND countries.name IN (%s) 
+                           ORDER BY timestamp DESC""" % placeholders
+                           
         elif average == True:
             sql_query = 'SELECT country, avg(pos_sentiment), avg(neu_sentiment), avg(neg_sentiment), avg(comp_sentiment) FROM comments \
             WHERE timestamp >= ?  AND timestamp < ? AND country IN (%s) GROUP by country ORDER BY timestamp DESC' % placeholders 
