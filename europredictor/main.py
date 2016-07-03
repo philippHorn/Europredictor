@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, abort, url_for, redirect
+from flask import Flask, request, render_template, abort, url_for, redirect, flash
 from flask_bootstrap import Bootstrap
 from match_data import get_all_teams
 from datetime import datetime
@@ -33,7 +33,6 @@ def graph():
     return render_template('custom_graph.html', teams = get_all_teams(), active = "graph", graph = graph)
 
 def _get_times():
-    # todo: add validation, support for multiple formats
     s_month = request.args.get("startMonth", None)
     s_day = request.args.get("startDay", None)
     s_date = datetime.strptime(s_month + s_day + "2016", "%m%d%Y")
@@ -42,10 +41,15 @@ def _get_times():
     e_date = datetime.strptime(e_month + e_day + "2016", "%m%d%Y")
     return s_date, e_date
 
+@app.errorhandler(400)
+def invalid_graph(error):
+    flash("Invalid Request, there is no data for the specified timeframe on the specified countries.")
+    return redirect(url_for('graph'))
 
 if __name__ == "__main__":
     import os
     host = os.environ.get('IP', '0.0.0.0')
     port = int(os.environ.get('PORT', 8080))
+    app.secret_key = ''
     app.run(debug=True, host=host, port=port)
     # app.run(debug=True)

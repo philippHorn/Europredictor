@@ -3,6 +3,7 @@ from datetime import datetime
 from bokeh.charts import TimeSeries, output_file, show
 from db_IO import read_to_dataframe
 from bokeh.embed import components
+from flask import abort
 
 def sentiment_rolling_averages(countries = None, interval = 'hour', start_time = 0, end_time = None):
     '''
@@ -14,7 +15,8 @@ def sentiment_rolling_averages(countries = None, interval = 'hour', start_time =
         end_time = datetime.now()
     # Creat the dataframe from the database
     df = read_to_dataframe(countries = countries, average = False, start_time = start_time, end_time = end_time)
-    print df
+    if df.empty:
+        abort(400)
     # Calculate the overall sentiment
     df['sentiment'] = df.pos_sentiment - df.neg_sentiment
     
