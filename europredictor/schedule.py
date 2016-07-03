@@ -10,7 +10,7 @@ from db_IO import store_analysed_comment
 #@sched.scheduled_job('interval', hours=1)
 def run_all(time_interval, comment_limit=None):
     #pdb.set_trace()
-    comments = get_past_comments()
+    comments = get_past_comments(from_oldest = True)
     
     for comment in comments:
         if len(comment.countries) == 1:

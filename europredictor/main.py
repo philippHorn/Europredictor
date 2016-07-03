@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, abort, url_for, redirect
 from flask_bootstrap import Bootstrap
 from match_data import get_all_teams
 from datetime import datetime
+from graphing import plot_countries
 #from graphing import sentiment_rolling_averages
 
 
@@ -21,12 +22,15 @@ def home():
 def graph():
     """page for showing a custom graph, specified in the GET-headers"""
     graph_keys = {"startMonth", "endMonth", "startDay", "endDay", "countries"}
+    graph = ""
     if graph_keys.intersection(request.args.keys()) == graph_keys:
         countries = request.args.getlist("countries")
         start_date, end_date = _get_times()
-        #data_points = sentiment_rolling_averages(countries, start, end)
+        s_timestamp = float(start_date.strftime("%s")) 
+        e_timestamp = float(end_date.strftime("%s"))
+        graph = plot_countries(countries, s_timestamp, e_timestamp)
 
-    return render_template('custom_graph.html', teams = get_all_teams(), active = "graph")
+    return render_template('custom_graph.html', teams = get_all_teams(), active = "graph", graph = graph)
 
 def _get_times():
     # todo: add validation, support for multiple formats
