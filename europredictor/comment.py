@@ -10,6 +10,7 @@ from keywords import keywords
 from praw import Reddit
 from praw.objects import MoreComments
 from praw.helpers import submissions_between, comment_stream, flatten_tree
+from db_IO import find_oldest
 
 r = Reddit(user_agent='Get comments from soccer subreddit')
     
@@ -53,15 +54,18 @@ class Comment(object):
               # Functions #
 ###########################################
 
+#def fill_gaps():
+    
 
 def get_all_comments(time_interval, comment_limit=None):
     user = r.get_subreddit('soccer')
     comments = user.get_comments(sort='new', time=time_interval, limit=comment_limit)
     return (Comment(c) for c in comments)
 
-def get_past_comments(lowest_timestamp = None, highest_timestamp = None):
+def get_past_comments(lowest_timestamp = None, highest_timestamp = None, from_oldest = False):
     """gets comments that were made before the given time"""
-    
+    if from_oldest:
+        highest_timestamp = find_oldest()
     subs = submissions_between(r, "soccer", highest_timestamp = highest_timestamp, lowest_timestamp = lowest_timestamp)
     comments = (sub.comments for sub in subs)
     for sub_comments in comments:
