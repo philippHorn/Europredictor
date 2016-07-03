@@ -21,8 +21,6 @@ class Comment(object):
         self.body = comment.body
         self.url = comment.permalink
         self.flair = comment.author_flair_text
-        if self.flair in keywords:
-            self._replace_we()
         self.posted = comment.created_utc
         self.countries = self.find_countries()
         self.score = comment.score
@@ -50,20 +48,7 @@ class Comment(object):
         
         self.polarity_scores = vader.SentimentIntensityAnalyzer().polarity_scores(self.body)
     
-    def _replace_we(self):
-        """
-        Since it is very common for the soccer subreddit to refer to a country by 'we', 
-        when the user has a flair set for that country, this replaces the 'we' keyword with
-        the flair's country name.
-        """
-        start = self.body
-        # negative lookahead to include the empty string
-        self.body = re.sub(pattern = "(?<!\w)we\W",repl = (self.flair + " "), string = self.body, flags = re.IGNORECASE)
-        self.body = re.sub(pattern = "(?<!\w)our\W",repl = (self.flair + " "), string = self.body, flags = re.IGNORECASE)
-        if self.body != start:
-            print "------------", start
-            print "+++++++++++++++", self.body
-    
+
 ###########################################
               # Functions #
 ###########################################
