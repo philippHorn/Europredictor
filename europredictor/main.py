@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, abort, url_for, redirect, flash
 from flask_bootstrap import Bootstrap
-from match_data import get_all_teams
+from keywords import keywords
 from datetime import datetime
 from graphing import plot_countries
 #from graphing import sentiment_rolling_averages
@@ -30,9 +30,8 @@ def graph():
         s_timestamp = float(start_date.strftime("%s")) 
         e_timestamp = float(end_date.strftime("%s"))
         graph = plot_countries(countries, s_timestamp, e_timestamp)
-
     return render_template('custom_graph.html', 
-                            teams = get_all_teams(), 
+                            teams = sorted(keywords.keys()), 
                             active = "graph", 
                             graph = graph)
 

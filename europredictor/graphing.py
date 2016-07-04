@@ -31,12 +31,24 @@ def sentiment_rolling_averages(countries = None, interval = 'hour', start_time =
     
     
     #This doesn't seem to be working yet - and it's not a rolling average.
-    df.groupby([df["name"], df["timestamp"].dt.hour]).mean()
+    #df = df.groupby([df["name"], df["timestamp"].dt.hour]).mean()
     
+
     return df
 
-def plot_countries(countries, start_time, end_time):
+def plot_countries(countries, start_time, end_time, smoothen = False):
+    
     df = sentiment_rolling_averages(countries = countries, start_time = start_time, end_time = end_time, interval = 'hour')
+    group = df.groupby('name')
+    dfs = []
+    # for name, dataf in group:
+    #     dataf['sentiment'] = pd.rolling_mean(dataf['sentiment'])
+    #     dfs.append(dataf)
+    
+    # #averages = [pd.rolling_mean(dataframe['sentiment'], 20) for name, dataframe in df.groupby('name')]
+    # df = pd.concat(dfs)
+    # print df
+    #df['sentiment'] = pd.rolling_mean(df['sentiment'], 20)
     p = TimeSeries(df, x='timestamp', y='sentiment', color='name', width=1200)
     return "\n".join(components(p))
 
