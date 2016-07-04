@@ -8,17 +8,21 @@
         <div class="panel panel-default">
           <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
-              <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                 Choose Teams
               </a>
             </h4>
           </div>
+          {% if graph %} 
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          {% else %}
           <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+          {% endif %}
             <div class="panel-body">
                 {% for team in teams %}
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" value="{{team}}" name="countries">
+                    <input type="checkbox" value={{team}} name="countries">
                     {{team}}
                   </label>
                 </div>
@@ -75,6 +79,9 @@
           </div>
         </div>
       </div>
+      <label>
+        <input type="checkbox" name="noise" checked> Reduce noise
+      </label><br>
       <input type="submit" value="Submit">
   </form>
 <br><br>

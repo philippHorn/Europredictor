@@ -20,12 +20,13 @@ def matches():
         start_tstamp = float(start_date.strftime("%s"))
         match = get_match(start_date)
         countries = [match.away_team, match.home_team]
-
+        smoothen = "noise" in request.args
+        
         # get the graph with some extra time before and after the match
         graph = plot_countries(countries, 
                                start_tstamp - HOUR_TSTAMP * 6, 
                                start_tstamp + HOUR_TSTAMP * 5, 
-                               smoothen = True)
+                               smoothen = smoothen)
         
         
     matches = get_past_matches(grouped = True)
@@ -47,7 +48,9 @@ def graph():
         start_date, end_date = _get_times()
         s_timestamp = float(start_date.strftime("%s")) 
         e_timestamp = float(end_date.strftime("%s"))
-        graph = plot_countries(countries, s_timestamp, e_timestamp, smoothen = True)
+        smoothen = "noise" in request.args
+        graph = plot_countries(countries, s_timestamp, e_timestamp, smoothen = smoothen)
+        
     return render_template('custom_graph.html', 
                             teams = sorted(keywords.keys()), 
                             active = "graph", 
