@@ -3,18 +3,32 @@ from flask_bootstrap import Bootstrap
 from keywords import keywords
 from datetime import datetime
 from graphing import plot_countries
-#from graphing import sentiment_rolling_averages
+from match_data import get_past_matches, get_match
 
+HOUR_TSTAMP = 60 * 60.0
 
 app = Flask(__name__)
 Bootstrap(app)
 
-@app.route("/matches")
+@app.route("/matches/")
 def matches():
-    return render_template('matches.html', active = "matches")
+    graph = ""
+    start_date = request.args.get("matchStart", None)
+    if start_date:
+        start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S")
+        start_tstamp = float(start_date.strftime("%s"))
+        match = get_match(start_date)
+        countries = [match.away_team, match.home_team]
+        graph = plot_countries(countries, 
+                               start_tstamp - HOUR_TSTAMP, 
+                               start_tstamp + HOUR_TSTAMP * 3)
+        
+        
+    matches = get_past_matches(grouped = True)
+    return render_template('matches.html', active = "matches", matches = matches, graph = graph)
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home/")
 def home():
     return render_template('home.html', active = "home")
 

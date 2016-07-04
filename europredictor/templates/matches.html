@@ -1,4 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Matches</h1>
+<h3>Select a match to see its sentiment graph</h3>
+<form action="/matches/" method="get">
+    <select class="form-control" name="matchStart">
+        
+        {% if matches["Final"]%}
+        <optgroup label="Final">
+            {% for match in matches["Round of 16"] %}
+            <option value={{match.start_date.isoformat()}}>{{match.home_team}} - {{match.away_team}}</option>
+            {% endfor %}
+        </optgroup>
+        {% endif %}
+        
+        {% if matches["Semi Final"]%}
+        <optgroup label="Semi Final">
+            {% for match in matches["Semi Final"] %}
+            <option value={{match.start_date.isoformat()}}>{{match.home_team}} - {{match.away_team}}</option>
+            {% endfor %}
+        </optgroup>
+        {% endif %}
+        
+        <optgroup label="Quarter Final">
+            {% for match in matches["Quarter Final"] %}
+            <option value={{match.start_date.isoformat()}}>{{match.home_team}} - {{match.away_team}}</option>
+            {% endfor %}
+        </optgroup>
+        
+        <optgroup label="Round of 16">
+            {% for match in matches["Round of 16"] %}
+            <option value={{match.start_date.isoformat()}}>{{match.home_team}} - {{match.away_team}}</option>
+            {% endfor %}
+        </optgroup>
+        
+        <optgroup label="Group Stage">
+            {% for match in matches["Group Stage"] %}
+            <option value={{match.start_date.isoformat()}}>{{match.home_team}} - {{match.away_team}}</option>
+            {% endfor %}
+        </optgroup>
+    </select>
+    
+    <input type="submit" value="Submit">
+</form>
+{% if graph %}
+    <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css" type="text/css" />
+    <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
+{{graph | safe}}
+{% endif %}
 {% endblock %}
