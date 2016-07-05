@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="container">
 <h3>Select a match to see its sentiment graph</h3>
 <form action="/matches/" method="get">
     <select class="form-control" name="matchStart">
@@ -48,4 +49,6 @@
     <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
 {{graph | safe}}
 {% endif %}
+
+</div>
 {% endblock %}

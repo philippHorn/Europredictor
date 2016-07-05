@@ -142,48 +142,28 @@ def _write_comment_to_db(analysed_comment):
     conn.execute(sql, params)
     conn.commit()
     print('Comment successfully written to db')
-    """except:
-        with open("error.txt", "wb") as file:
-            file.write(str(params))
-            print params"""
 
-def read_to_dataframe(countries = None, average = False, start_time = 0, end_time = datetime.now()):
+
+def read_to_dataframe(countries, start_time = 0, end_time = None):
     '''
     Reads data from the database into a pandas-dataframe.
     '''
     
-    # If no contires specified, retrieve all comments
-    if countries == None:
+    if end_time is None:
+        end_time = datetime.now()
         
-        sql_params = (start_time, end_time)
-        if average == False:
-            sql_query = 'SELECT * FROM comments WHERE timestamp >= ?  AND timestamp < ? ORDER BY timestamp DESC'
-        elif average == True:
-            sql_query = 'SELECT country, avg(pos_sentiment), avg(neg_sentiment) FROM comments \
-            WHERE timestamp >= ?  AND timestamp < ? GROUP by country'
-        else:
-            raise ValueError()
-            
-    else:
-        
-        placeholders = ", ".join("?" * len(countries))
-        sql_params = [start_time, end_time]
-        sql_params.extend(countries)
-        if average == False: 
-            sql_query = """SELECT name, timestamp, pos_sentiment, neg_sentiment 
-                           FROM comments JOIN countries
-                           WHERE comments.country = countries.id 
-                           AND comments.timestamp >= ?  
-                           AND comments.timestamp < ? 
-                           AND countries.name IN (%s) 
-                           ORDER BY timestamp DESC""" % placeholders
-                           
-        elif average == True:
-            sql_query = 'SELECT country, avg(pos_sentiment), avg(neu_sentiment), avg(neg_sentiment), avg(comp_sentiment) FROM comments \
-            WHERE timestamp >= ?  AND timestamp < ? AND country IN (%s) GROUP by country ORDER BY timestamp DESC' % placeholders 
-        else:
-            raise ValueError()
+    placeholders = ", ".join("?" * len(countries))
+    sql_params = [start_time, end_time]
+    sql_params.extend(countries)
 
+    sql_query = """SELECT name, timestamp, pos_sentiment, neg_sentiment 
+                   FROM comments JOIN countries
+                   WHERE comments.country = countries.id 
+                   AND comments.timestamp >= ?  
+                   AND comments.timestamp < ? 
+                   AND countries.name IN (%s) 
+                   ORDER BY timestamp DESC""" % placeholders
+                       
     conn = _connect_db(DATABASE_NAME)
     df = pd.read_sql_query(sql_query, conn, params = sql_params)
     return df

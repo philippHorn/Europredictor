@@ -2,6 +2,7 @@
 
 
 {% block content %}
+<div class="container">
   <h1>Custom Graph</h1>
   <form action="/graph/" method="get">
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -91,5 +92,5 @@
 <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
 {{graph | safe}}
 {% endif %}
-
+</div>
 {% endblock %}

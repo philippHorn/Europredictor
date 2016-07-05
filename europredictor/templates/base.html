@@ -1,11 +1,9 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}Europredictor{% endblock %}
 
-
-
-
-
 {% block navbar %}
+<div class="container">     
+
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <ul class="nav navbar-nav">
@@ -30,6 +28,8 @@
     </ul>
   </div><!-- /.container-fluid -->
 </nav>
+
+</div>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>

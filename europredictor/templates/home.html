@@ -1,4 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Home</h1>
+<div class="container">
+<p>Welcome! This Website contains graphs made from data of the UEFA EURO 2016</p>
+<p>Here are some interesting statistics from the collected data:</p>
+<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css" type="text/css" />
+<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
+<br>
+<p>explanation</p>
+<button data-toggle="collapse" data-target="#comments">Show Graph</button>
+<div id="comments" class="collapse">
+{% include 'plots/comments.html' %}
+</div>
+<br><br><br>
+
+<p>explanation</p>
+<button data-toggle="collapse" data-target="#controversy">Show Graph</button>
+<div id="controversy" class="collapse">
+{% include 'plots/controversy.html' %}
+</div>
+<br><br><br>
+
+<p>explanation</p>
+<button data-toggle="collapse" data-target="#difference">Show Graph</button>
+<div id="difference" class="collapse">
+{% include 'plots/mean difference.html' %}
+</div>
+<br><br><br>
+
+<p>explanation</p>
+<button data-toggle="collapse" data-target="#mean">Show Graph</button>
+<div id="mean" class="collapse">
+{% include 'plots/mean.html' %}
+</div>
+<br><br><br>
+
+</div>
 {% endblock %}
