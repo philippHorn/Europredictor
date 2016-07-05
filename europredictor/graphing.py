@@ -43,8 +43,9 @@ def plot_countries(countries, start_time, end_time, smoothen = False):
         dfs = []
         for name, dataf in groups:
             # window size should be proportional to the number of data points
-            # 30 was found to work nice through experimentation
-            w_size = int((dataf['sentiment'].size/30.0))    
+            # 10 was found to work nice through experimentation
+            w_size = int((dataf['sentiment'].size/10.0))
+            print "Window size:", w_size    
             dataf['sentiment'] = pd.rolling_mean(dataf['sentiment'], w_size)
             dfs.append(dataf)
 
@@ -85,7 +86,7 @@ def get_other_stats():
             label : [v[1] for v in vals],
             "labels" : [v[0] for v in vals]
             }
-        bar = Bar(data, values = label, label = "labels")
+        bar = Bar(data, values = label, label = "labels", legend = False)
         with open("europredictor/templates/plots/" + label + ".html", "w") as file:
             file.write("\n".join(components(bar)))
 
@@ -93,8 +94,8 @@ def get_other_stats():
 def _get_change(dataf):
     sent_series = dataf['sentiment']
     size = sent_series.size - 1
-    start_mean = sent_series[:size/8].mean()
-    end_mean = sent_series[int(size * (7.0/8)):].mean()
+    start_mean = sent_series[:size/4].mean()
+    end_mean = sent_series[int(size * (3.0/4)):].mean()
     return start_mean - end_mean
     
 #get_other_stats()

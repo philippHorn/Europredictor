@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h1>Custom Graph</h1>
+  <h1>Select countries and a time frame to see the corresponding sentiment data</h1>
   <form action="/graph/" method="get">
       <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
@@ -23,7 +23,7 @@
                 {% for team in teams %}
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" value={{team}} name="countries">
+                    <input type="checkbox" value="{{team}}" name="countries">
                     {{team}}
                   </label>
                 </div>

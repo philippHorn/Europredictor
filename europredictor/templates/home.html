@@ -2,32 +2,42 @@
 {% block content %}
 <div class="container">
 <p>Welcome! This Website contains graphs made from data of the UEFA EURO 2016</p>
-<p>Here are some interesting statistics from the collected data:</p>
+<p>Here are some interesting statistics made of the collected data:</p>
 <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css" type="text/css" />
 <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
 <br>
-<p>explanation</p>
+<p>Out of all countries, England was mentioned the most and Czech Republic was mentioned the least.
+The wide gap between England and the other countries can be explained by us always counting the word "Enlgish" as referring to the English team,
+while the term often refers to the English language. So there might be quite a few falsely recognized comments about England in our database.
+</p>
 <button data-toggle="collapse" data-target="#comments">Show Graph</button>
 <div id="comments" class="collapse">
 {% include 'plots/comments.html' %}
 </div>
 <br><br><br>
 
-<p>explanation</p>
+<p>Peoples opinions about Albania differ the most, while they differ the least about the Czech Republic.
+This statistic uses the mean absolute deviation.
+</p>
 <button data-toggle="collapse" data-target="#controversy">Show Graph</button>
 <div id="controversy" class="collapse">
 {% include 'plots/controversy.html' %}
 </div>
 <br><br><br>
 
-<p>explanation</p>
-<button data-toggle="collapse" data-target="#difference">Show Graph</button>
+<p>Russia had the biggest positive change in peoples general opinion. Croatia had the most negative change.
+Both of these can be explained by the press about the countries' fans. There was some negative press about Russian fans at the start
+of the tournament, while Croatian fans got bad press later in the tournament. Since people are also discussing about that kind of events on
+the soccer subreddit, our data reflects that as well.
+</p>
+<button data-toggle="collapse" data-target="#difference">Show Graphs</button>
 <div id="difference" class="collapse">
 {% include 'plots/mean difference.html' %}
+{% include 'plots/rus_cro.html' %}
 </div>
 <br><br><br>
 
-<p>explanation</p>
+<p>According to our data, the most popular country for the tournament was Hungary. On the other side of this is Russia.</p>
 <button data-toggle="collapse" data-target="#mean">Show Graph</button>
 <div id="mean" class="collapse">
 {% include 'plots/mean.html' %}
