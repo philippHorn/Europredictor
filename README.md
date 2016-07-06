@@ -14,6 +14,8 @@ The application uses the following services and technologies:
 <li>Flask for the server backend</li>
 <li>Flask-Bootstrap to display the website to the users</li>
 <li>Bokeh to make interactive graphs of the collected data</li>
-<li>The Football Data API to get match times and results of the games</li>
+<li>The Football Data API to get start times and results for the games</li>
 </ul>
 </p>
+<br>
+
