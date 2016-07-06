@@ -14,6 +14,7 @@ Bootstrap(app)
 @app.route("/matches/")
 def matches():
     graph = ""
+    match = None
     start_date = request.args.get("matchStart", None)
     if start_date:
         start_date = datetime.strptime(start_date, "%Y-%m-%dT%H:%M:%S")
@@ -30,7 +31,8 @@ def matches():
         
         
     matches = get_past_matches(grouped = True)
-    return render_template('matches.html', active = "matches", matches = matches, graph = graph)
+    return render_template('matches.html', active = "matches", 
+                           matches = matches, graph = graph, match = match)
 
 @app.route("/")
 @app.route("/home/")
@@ -77,4 +79,4 @@ if __name__ == "__main__":
     host = os.environ.get('IP', '0.0.0.0')
     port = int(os.environ.get('PORT', 8080))
     app.secret_key = SECRET_KEY
-    app.run(debug=True, host=host, port=port)
+    app.run(debug=False, host=host, port=port)

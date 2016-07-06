@@ -45,6 +45,7 @@
     <input type="submit" value="Submit">
 </form>
 {% if graph %}
+<h3>{{match.home_team}} {{match.home_team_goals}} : {{match.away_team_goals}} {{match.away_team}}</h3>
     <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css" type="text/css" />
     <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
 {{graph | safe}}

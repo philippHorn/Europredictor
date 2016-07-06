@@ -39,7 +39,7 @@ def get_match(start_date):
     
 def get_past_matches(grouped = False):
     if grouped: 
-        matches = get_all_matches()
+        matches = get_past_matches()
         return {
             "Group Stage" : [match for match in matches if match.start_date < GROUP_STAGE_END],
             "Round of 16" : [match for match in matches if GROUP_STAGE_END < match.start_date < ROUND_16_END],
