@@ -1,9 +1,9 @@
 <h3>Overview</h3>
-<p> The goal of this application is to provide insight about the general public's opinion about individual teams of the UEFA Euro 2016. To do that, we collected over 30000 comments or phrases from reddit, that contains references to countries participating in the tournament. Europredictor is able to present this data in form of a website (even though the website is currently not hosted), providing an easy interface to plot graphs. </p>
+<p> The goal of this application is to provide insight about the general public's opinion about individual teams of the UEFA Euro 2016. To do that, we collected over 30000 comments or phrases from reddit, that contain references to countries participating in the tournament. Europredictor is able to present this data in form of a website (even though the website is currently not hosted), providing an easy interface to plot graphs. </p>
 <br>
 
 <h3>Results</h3>
-<p>According to our data, Hungary was the most popular country during the tournament, while Russia was the least popular. This was done by taking the mean for each countries data.
+<p>According to our data, Hungary was the most popular country during the tournament, while Russia was the least popular. This was done by taking the mean for each countries sentiment.
 <img src="http://i.imgur.com/HVJAzb5.png"></img><br>
 Russia had the greatest positive change in people's general opinion, Croatia had the greatest negative change. To get to these results we compared a country's mean for the oldest quarter of their comments to the mean of the latest quarter of their comments. The graph contains the first quarter's mean minus the last quarter's mean.
 <img src="http://i.imgur.com/nGN7OcV.png"></img><br>
@@ -32,7 +32,7 @@ The application uses the following services and technologies:
 </p>
 <br>
 <h3>Improvement Aspects</h3>
-<p>The biggest issue of the application is the analysis of the comments. Sometimes the country reference has no connection to the sentiment. Sentences like "He played really well in his match against Italy" will mistakenly result in a positive score for Italiy. The sentiment analyser is also trained on data from movie reviews and twitter and sometimes fails to make sense of the language and references used in the captured reddit comments. This could be improved by using lower level natural language processing.<br>
+<p>The biggest issue of the application is the analysis of the comments. Sometimes the country reference has no connection to the sentiment and we fail to recognize that. Sentences like "He played really well in his match against Italy" will mistakenly result in a positive score for Italiy. The sentiment analyser is also trained on data from movie reviews and twitter and sometimes fails to make sense of the language and references used in the captured reddit comments. This could be improved by using lower level natural language processing.<br>
 </p>
 <h3>Contributers</h3>
 <ul>
