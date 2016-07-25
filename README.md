@@ -1,6 +1,6 @@
 <h2><a href=http://philipphorn.pythonanywhere.com/>Europredictor Website</a></h2>
 <h3>Overview</h3>
-<p> The goal of this application is to provide insight about the general public's opinion about individual teams of the UEFA Euro 2016. To do that, we collected over 30000 comments or phrases from reddit, that contain references to countries participating in the tournament. Europredictor is able to present this data in form of a website (even though the website is currently not hosted), providing an easy interface to plot graphs. </p>
+<p> The goal of this application is to provide insight about the general public's opinion about individual teams of the UEFA Euro 2016. To do that, we collected over 30000 comments or phrases from reddit, that contain references to countries participating in the tournament. Europredictor is able to present this data in form of a website, providing a simple interface to plot graphs. </p>
 <br>
 
 <h3>Results</h3>
